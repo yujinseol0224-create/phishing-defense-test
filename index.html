@@ -171,10 +171,9 @@
                                     <p className="text-gray-700 text-sm leading-relaxed break-keep">{getResult().desc}</p>
                                 </div>
 
-                                {/* ✅ 새롭게 추가된 '가족 비상 암호 서약서' 캡처 유도 디자인 */}
                                 <div className="bg-blue-50 p-5 rounded-xl border-2 border-dashed border-blue-400 mb-6 relative">
                                     <div className="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-blue-600 text-white px-3 py-1 rounded-full text-xs font-bold shadow">
-                                        📸 화면을 캡처해서 단톡방에 공유하세요!
+                                        📸 작성 후 화면을 캡처해 가족에게 보내세요!
                                     </div>
                                     <h3 className="text-lg font-bold text-center text-blue-900 mt-3 mb-3">
                                         📝 우리 가족 비상 암호 서약서
@@ -182,11 +181,21 @@
                                     <p className="text-xs text-center text-gray-600 mb-4 break-keep">
                                         우리 가족은 전화나 카톡으로 금전, 앱 설치를 요구받으면 <strong>반드시 아래의 암호</strong>를 물어보고 확인하겠습니다.
                                     </p>
+                                    
+                                    {/* ✅ 직접 입력할 수 있는 스마트폰 키보드 텍스트 입력창으로 변경된 부분 */}
                                     <div className="bg-white p-4 rounded-lg border border-gray-200">
                                         <p className="text-sm font-bold text-gray-700 mb-1">Q. 우리 가족의 비상 질문은?</p>
-                                        <div className="border-b-2 border-gray-200 h-6 mb-4 text-gray-400 text-sm">(예: 첫 가족 여행지는?)</div>
+                                        <input 
+                                            type="text" 
+                                            placeholder="(터치해서 작성. 예: 첫 가족 여행지는?)" 
+                                            className="w-full border-b-2 border-gray-200 py-2 mb-4 text-gray-800 text-sm focus:outline-none focus:border-blue-500 transition-colors bg-transparent placeholder-gray-400"
+                                        />
                                         <p className="text-sm font-bold text-gray-700 mb-1">A. 정답은?</p>
-                                        <div className="border-b-2 border-gray-200 h-6 text-gray-400 text-sm"></div>
+                                        <input 
+                                            type="text" 
+                                            placeholder="(터치해서 정답 작성)" 
+                                            className="w-full border-b-2 border-gray-200 py-2 text-gray-800 text-sm focus:outline-none focus:border-blue-500 transition-colors bg-transparent placeholder-gray-400"
+                                        />
                                     </div>
                                 </div>
 
