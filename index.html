@@ -30,7 +30,7 @@
                 text: "자녀 목소리로 '엄마 나 사고 났어' 하고 울먹이는 전화가 온다면?",
                 options: [
                     { text: "놀라서 일단 알려주는 계좌로 돈부터 보낸다.", score: 0 },
-                    { text: "일단 전화를 끊고 자녀 본인이나 직장으로 직접 확인한다.", score: 25 }
+                    { text: "일단 전화를 끊고 자녀 본인이나 직장으로 직접 확인한다.", score: 1 } // 정답 2번
                 ]
             },
             {
@@ -38,8 +38,8 @@
                 tag: "기관 사칭",
                 text: "'검찰청입니다. 명의가 도용됐으니 안전계좌로 이체하세요.' 전화가 온다면?",
                 options: [
-                    { text: "검찰이라니 무서워서 시키는 대로 이체한다.", score: 0 },
-                    { text: "수사기관은 절대 전화로 돈을 요구하지 않는다는 걸 알고 끊는다.", score: 25 }
+                    { text: "수사기관은 절대 전화로 돈을 요구하지 않는다는 걸 알고 끊는다.", score: 1 }, // 정답 1번
+                    { text: "검찰이라니 무서워서 시키는 대로 안전계좌로 이체한다.", score: 0 }
                 ]
             },
             {
@@ -48,34 +48,43 @@
                 text: "'[경찰청] 교통법규 위반(신호위반) 과태료 고지서 발송 완료' 문자와 함께 링크(URL)가 온다면?",
                 options: [
                     { text: "언제 신호위반을 했나 놀라서 당장 링크를 눌러 확인해 본다.", score: 0 },
-                    { text: "문자 링크는 무시하고, '교통민원24' 공식 앱이나 사이트로 직접 들어간다.", score: 25 }
+                    { text: "문자 링크는 무시하고, '교통민원24' 공식 앱이나 사이트로 직접 들어간다.", score: 1 } // 정답 2번
                 ]
             },
             {
                 id: 4,
-                tag: "투자 리딩방",
-                text: "'미국 S&P 500, 나스닥 핵심 대형주 300% 수익 보장' 1:1 리딩방 초대 문자가 온다면?",
+                tag: "물품거래 사기", // 새롭게 추가된 항목
+                text: "중고마켓 판매자가 '안전결제 수수료는 제가 낼 테니 이 링크로 결제하세요'라며 카톡으로 링크를 보낸다면?",
                 options: [
-                    { text: "손해 볼 건 없으니 일단 무료 정보방 링크를 눌러 입장해 본다.", score: 0 },
-                    { text: "원금과 고수익을 무조건 보장하는 투자는 100% 사기라 생각하고 차단한다.", score: 25 }
+                    { text: "판매자가 메신저로 직접 보낸 결제 링크는 100% 가짜(피싱)라 생각하고 거래를 중단한다.", score: 1 }, // 정답 1번
+                    { text: "수수료도 내주고 안전결제라니 안심하고 링크를 눌러 결제한다.", score: 0 }
                 ]
             },
             {
                 id: 5,
-                tag: "택배 스미싱",
-                text: "[국외발신] 택배 주소지 불일치로 배송이 지연되고 있습니다. 링크(URL)를 확인하세요.",
+                tag: "투자 리딩방",
+                text: "'미국 S&P 500, 나스닥 핵심 대형주 300% 수익 보장' 1:1 리딩방 초대 문자가 온다면?",
                 options: [
-                    { text: "궁금해서 일단 링크를 눌러본다.", score: 0 },
-                    { text: "택배사 공식 앱이나 배송 조회 페이지에서 송장번호로 직접 확인한다.", score: 25 }
+                    { text: "손해 볼 건 없으니 일단 무료 정보방 링크를 눌러 입장해 본다.", score: 0 },
+                    { text: "원금과 고수익을 무조건 보장하는 투자는 100% 사기라 생각하고 차단한다.", score: 1 } // 정답 2번
                 ]
             },
             {
                 id: 6,
+                tag: "택배 스미싱",
+                text: "[국외발신] 택배 주소지 불일치로 배송이 지연되고 있습니다. 링크(URL)를 확인하세요.",
+                options: [
+                    { text: "택배사 공식 앱이나 배송 조회 페이지에서 송장번호로 직접 확인한다.", score: 1 }, // 정답 1번
+                    { text: "배송이 늦어지면 안 되니 얼른 문자의 링크를 눌러 확인해 본다.", score: 0 }
+                ]
+            },
+            {
+                id: 7,
                 tag: "가족 사칭",
                 text: "자녀에게 '엄마 나 액정 깨져서 임시 폰이야. 카톡으로 상품권 좀 사줘' 문자가 온다면?",
                 options: [
-                    { text: "급한가 보다 싶어서 바로 사준다.", score: 0 },
-                    { text: "전화로 확인하거나 '우리 집 비상 암호'를 물어본다.", score: 25 }
+                    { text: "폰이 깨져서 당황했겠다 싶어서 바로 상품권을 사서 보낸다.", score: 0 },
+                    { text: "전화로 먼저 확인하거나 '우리 집 비상 암호'를 물어본다.", score: 1 } // 정답 2번
                 ]
             }
         ];
@@ -95,9 +104,12 @@
             };
 
             const getResult = () => {
-                if (score === 150) return { title: "[안전] 피싱 철벽 방어자 🛡️", desc: "완벽합니다! 보이스피싱범이 울고 갈 방어력입니다. 하지만 내 가족도 나만큼 안전할까요?", color: "text-green-600", bg: "bg-green-100" };
-                if (score >= 75) return { title: "[주의] 아차 하는 순간, 방심 금물 🤔", desc: "기본적인 예방 수칙은 알고 계시지만, 교묘한 최신 수법에는 아차 하는 순간 당할 수 있어요. 조금 더 신중해질 필요가 있습니다.", color: "text-yellow-600", bg: "bg-yellow-100" };
-                return { title: "[위험] 귀가 얇은 팔랑귀 🚨", desc: "속임수에 넘어가기 매우 쉬운 위험 상태입니다! 지금 당장 가족과 함께 방어막을 구축해야 합니다.", color: "text-red-600", bg: "bg-red-100" };
+                // 100점 만점으로 자동 환산
+                const finalScore = Math.round((score / questions.length) * 100);
+                
+                if (finalScore === 100) return { score: finalScore, title: "[안전] 피싱 철벽 방어자 🛡️", desc: "완벽합니다! 보이스피싱범이 울고 갈 방어력입니다. 하지만 내 가족도 나만큼 안전할까요?", color: "text-green-600", bg: "bg-green-100" };
+                if (finalScore >= 70) return { score: finalScore, title: "[주의] 아차 하는 순간, 방심 금물 🤔", desc: "기본적인 예방 수칙은 알고 계시지만, 교묘한 최신 수법에는 아차 하는 순간 당할 수 있어요. 조금 더 신중해질 필요가 있습니다.", color: "text-yellow-600", bg: "bg-yellow-100" };
+                return { score: finalScore, title: "[위험] 귀가 얇은 팔랑귀 🚨", desc: "속임수에 넘어가기 매우 쉬운 위험 상태입니다! 지금 당장 가족과 함께 방어막을 구축해야 합니다.", color: "text-red-600", bg: "bg-red-100" };
             };
 
             const handleShare = async () => {
@@ -131,7 +143,7 @@
                             <div className="p-8 text-center space-y-6">
                                 <div className="text-5xl mb-4">📱</div>
                                 <h1 className="text-2xl font-bold text-gray-800">내 피싱 방어력은<br/>과연 몇 점일까?</h1>
-                                <p className="text-gray-500">1분 만에 알아보는 나의 취약점 진단<br/>(최신 수법 반영, 총 6문항)</p>
+                                <p className="text-gray-500">1분 만에 알아보는 나의 취약점 진단<br/>(최신 수법 반영, 총 7문항)</p>
                                 <button onClick={handleStart} className="w-full bg-blue-600 text-white font-bold py-4 rounded-xl hover:bg-blue-700 transition duration-200">
                                     테스트 시작하기
                                 </button>
@@ -167,7 +179,8 @@
                         {step > questions.length && (
                             <div className="p-8">
                                 <div className={`text-center p-6 rounded-xl ${getResult().bg} mb-8`}>
-                                    <h2 className={`text-2xl font-bold ${getResult().color} mb-3`}>{getResult().title}</h2>
+                                    <h1 className={`text-5xl font-black ${getResult().color} mb-2`}>{getResult().score}점</h1>
+                                    <h2 className={`text-xl font-bold ${getResult().color} mb-3`}>{getResult().title}</h2>
                                     <p className="text-gray-700 text-sm leading-relaxed break-keep">{getResult().desc}</p>
                                 </div>
 
@@ -182,7 +195,6 @@
                                         우리 가족은 전화나 카톡으로 금전, 앱 설치를 요구받으면 <strong>반드시 아래의 암호</strong>를 물어보고 확인하겠습니다.
                                     </p>
                                     
-                                    {/* ✅ 직접 입력할 수 있는 스마트폰 키보드 텍스트 입력창으로 변경된 부분 */}
                                     <div className="bg-white p-4 rounded-lg border border-gray-200">
                                         <p className="text-sm font-bold text-gray-700 mb-1">Q. 우리 가족의 비상 질문은?</p>
                                         <input 
