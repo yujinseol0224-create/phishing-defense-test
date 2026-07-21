@@ -79,8 +79,8 @@
                 setIsTrapped(false);
             };
 
-            // 킥 2: 타로 카드 결과 로직
-            const getTarotResult = () => {
+            // 킥 2: 타로 카드 결과 로직 (이름 수정 완료!)
+            const getResult = () => {
                 const finalScore = Math.round((score / questions.length) * 100);
                 if (finalScore === 100) return { 
                     score: finalScore, card: "황제 (The Emperor)", 
