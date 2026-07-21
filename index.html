@@ -100,15 +100,13 @@
                 return { title: "[위험] 귀가 얇은 팔랑귀 🚨", desc: "속임수에 넘어가기 매우 쉬운 위험 상태입니다! 지금 당장 가족과 함께 방어막을 구축해야 합니다.", color: "text-red-600", bg: "bg-red-100" };
             };
 
-            // ✅ 진짜 공유하기 기능 추가
             const handleShare = async () => {
                 const shareData = {
                     title: '내 피싱 방어력 모의고사',
-                    text: '최신 보이스피싱 수법! 내 방어력은 몇 점일까? 1분 만에 테스트하고 우리 집 비상 암호도 정해보세요!',
-                    url: window.location.href // 현재 사이트 주소 자동 입력
+                    text: '최신 보이스피싱 수법! 내 방어력은 몇 점일까? 1분 만에 테스트하고 우리 가족 비상 암호도 정해보세요!',
+                    url: window.location.href
                 };
 
-                // 스마트폰 등 공유 기능이 지원되는 기기일 경우
                 if (navigator.share) {
                     try {
                         await navigator.share(shareData);
@@ -116,7 +114,6 @@
                         console.log('공유 취소됨');
                     }
                 } else {
-                    // PC 등 공유 기능이 지원되지 않을 경우 주소 복사
                     try {
                         await navigator.clipboard.writeText(window.location.href);
                         alert('테스트 링크가 복사되었습니다! 카카오톡이나 맘카페 등에 붙여넣기(Ctrl+V) 해주세요.');
@@ -174,24 +171,28 @@
                                     <p className="text-gray-700 text-sm leading-relaxed break-keep">{getResult().desc}</p>
                                 </div>
 
-                                <div className="bg-gray-50 p-6 rounded-xl border border-gray-200 mb-6">
-                                    <h3 className="font-bold text-gray-800 mb-2 flex items-center">
-                                        <span className="text-xl mr-2">💡</span> 우리 집 비상 암호 만들기
+                                {/* ✅ 새롭게 추가된 '가족 비상 암호 서약서' 캡처 유도 디자인 */}
+                                <div className="bg-blue-50 p-5 rounded-xl border-2 border-dashed border-blue-400 mb-6 relative">
+                                    <div className="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-blue-600 text-white px-3 py-1 rounded-full text-xs font-bold shadow">
+                                        📸 화면을 캡처해서 단톡방에 공유하세요!
+                                    </div>
+                                    <h3 className="text-lg font-bold text-center text-blue-900 mt-3 mb-3">
+                                        📝 우리 가족 비상 암호 서약서
                                     </h3>
-                                    <p className="text-sm text-gray-600 mb-4 break-keep">
-                                        AI 딥보이스 시대, 가족 목소리도 100% 믿을 수 없습니다. 돈이나 인증번호를 요구할 때 반드시 확인할 암호를 지금 가족과 정하세요!
+                                    <p className="text-xs text-center text-gray-600 mb-4 break-keep">
+                                        우리 가족은 전화나 카톡으로 금전, 앱 설치를 요구받으면 <strong>반드시 아래의 암호</strong>를 물어보고 확인하겠습니다.
                                     </p>
-                                    <div className="bg-white p-3 rounded border border-gray-200 text-sm text-gray-700">
-                                        <strong>예시 질문:</strong><br/>
-                                        "우리가 처음으로 같이 간 여행지는?"<br/>
-                                        "우리 집 첫째 강아지 별명은?"
+                                    <div className="bg-white p-4 rounded-lg border border-gray-200">
+                                        <p className="text-sm font-bold text-gray-700 mb-1">Q. 우리 가족의 비상 질문은?</p>
+                                        <div className="border-b-2 border-gray-200 h-6 mb-4 text-gray-400 text-sm">(예: 첫 가족 여행지는?)</div>
+                                        <p className="text-sm font-bold text-gray-700 mb-1">A. 정답은?</p>
+                                        <div className="border-b-2 border-gray-200 h-6 text-gray-400 text-sm"></div>
                                     </div>
                                 </div>
 
                                 <div className="space-y-3">
-                                    {/* ✅ 버튼 클릭 시 handleShare 함수 실행되도록 변경 */}
                                     <button onClick={handleShare} className="w-full bg-yellow-400 text-gray-800 font-bold py-3 rounded-xl hover:bg-yellow-500 transition duration-200 flex justify-center items-center">
-                                        이웃과 이 테스트 공유하기
+                                        링크로 테스트 공유하기
                                     </button>
                                     <button onClick={handleStart} className="w-full bg-gray-200 text-gray-700 font-bold py-3 rounded-xl hover:bg-gray-300 transition duration-200">
                                         다시 하기
