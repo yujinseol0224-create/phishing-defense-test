@@ -4,152 +4,141 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>내 피싱 방어력은 몇 점일까?</title>
-    <!-- Tailwind CSS (디자인) -->
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- React & ReactDOM -->
     <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-    <!-- Babel (React 문법 변환) -->
+    <!-- Babel -->
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <!-- 폰트 설정 -->
     <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" rel="stylesheet">
     <style>
         body { font-family: 'Pretendard', sans-serif; background-color: #f0fdf4; }
+        .receipt-edge {
+            background-image: radial-gradient(circle at 10px 0, transparent 10px, white 11px);
+            background-size: 20px 20px;
+            background-position: -10px -10px;
+            height: 10px;
+            width: 100%;
+        }
+        .anim-slide-down { animation: slideDown 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+        @keyframes slideDown { 0% { transform: translateY(-100%); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
     </style>
 </head>
 <body>
     <div id="root"></div>
 
     <script type="text/babel">
-        const { useState } = React;
+        const { useState, useEffect } = React;
 
         const questions = [
-            {
-                id: 1,
-                tag: "AI 딥보이스",
-                text: "자녀 목소리로 '엄마 나 사고 났어' 하고 울먹이는 전화가 온다면?",
-                options: [
-                    { text: "놀라서 일단 알려주는 계좌로 돈부터 보낸다.", score: 0 },
-                    { text: "일단 전화를 끊고 자녀 본인이나 직장으로 직접 확인한다.", score: 1 } // 정답 2번
-                ]
-            },
-            {
-                id: 2,
-                tag: "기관 사칭",
-                text: "'검찰청입니다. 명의가 도용됐으니 안전계좌로 이체하세요.' 전화가 온다면?",
-                options: [
-                    { text: "수사기관은 절대 전화로 돈을 요구하지 않는다는 걸 알고 끊는다.", score: 1 }, // 정답 1번
-                    { text: "검찰이라니 무서워서 시키는 대로 안전계좌로 이체한다.", score: 0 }
-                ]
-            },
-            {
-                id: 3,
-                tag: "생활 스미싱",
-                text: "'[경찰청] 교통법규 위반(신호위반) 과태료 고지서 발송 완료' 문자와 함께 링크(URL)가 온다면?",
-                options: [
-                    { text: "언제 신호위반을 했나 놀라서 당장 링크를 눌러 확인해 본다.", score: 0 },
-                    { text: "문자 링크는 무시하고, '교통민원24' 공식 앱이나 사이트로 직접 들어간다.", score: 1 } // 정답 2번
-                ]
-            },
-            {
-                id: 4,
-                tag: "물품거래 사기", // 새롭게 추가된 항목
-                text: "중고마켓 판매자가 '안전결제 수수료는 제가 낼 테니 이 링크로 결제하세요'라며 카톡으로 링크를 보낸다면?",
-                options: [
-                    { text: "판매자가 메신저로 직접 보낸 결제 링크는 100% 가짜(피싱)라 생각하고 거래를 중단한다.", score: 1 }, // 정답 1번
-                    { text: "수수료도 내주고 안전결제라니 안심하고 링크를 눌러 결제한다.", score: 0 }
-                ]
-            },
-            {
-                id: 5,
-                tag: "투자 리딩방",
-                text: "'미국 S&P 500, 나스닥 핵심 대형주 300% 수익 보장' 1:1 리딩방 초대 문자가 온다면?",
-                options: [
-                    { text: "손해 볼 건 없으니 일단 무료 정보방 링크를 눌러 입장해 본다.", score: 0 },
-                    { text: "원금과 고수익을 무조건 보장하는 투자는 100% 사기라 생각하고 차단한다.", score: 1 } // 정답 2번
-                ]
-            },
-            {
-                id: 6,
-                tag: "택배 스미싱",
-                text: "[국외발신] 택배 주소지 불일치로 배송이 지연되고 있습니다. 링크(URL)를 확인하세요.",
-                options: [
-                    { text: "택배사 공식 앱이나 배송 조회 페이지에서 송장번호로 직접 확인한다.", score: 1 }, // 정답 1번
-                    { text: "배송이 늦어지면 안 되니 얼른 문자의 링크를 눌러 확인해 본다.", score: 0 }
-                ]
-            },
-            {
-                id: 7,
-                tag: "가족 사칭",
-                text: "자녀에게 '엄마 나 액정 깨져서 임시 폰이야. 카톡으로 상품권 좀 사줘' 문자가 온다면?",
-                options: [
-                    { text: "폰이 깨져서 당황했겠다 싶어서 바로 상품권을 사서 보낸다.", score: 0 },
-                    { text: "전화로 먼저 확인하거나 '우리 집 비상 암호'를 물어본다.", score: 1 } // 정답 2번
-                ]
-            }
+            { id: 1, tag: "AI 딥보이스", text: "자녀 목소리로 '엄마 나 사고 났어' 하고 울먹이는 전화가 온다면?", options: [{ text: "놀라서 일단 알려주는 계좌로 돈부터 보낸다.", score: 0 }, { text: "일단 전화를 끊고 자녀 본인이나 직장으로 직접 확인한다.", score: 1 }] },
+            { id: 2, tag: "기관 사칭", text: "'검찰청입니다. 명의가 도용됐으니 안전계좌로 이체하세요.' 전화가 온다면?", options: [{ text: "수사기관은 절대 전화로 돈을 요구하지 않는다는 걸 알고 끊는다.", score: 1 }, { text: "검찰이라니 무서워서 시키는 대로 안전계좌로 이체한다.", score: 0 }] },
+            { id: 3, tag: "생활 스미싱", text: "'[경찰청] 교통법규 위반(신호위반) 과태료 고지서 발송 완료' 문자와 함께 링크(URL)가 온다면?", options: [{ text: "언제 신호위반을 했나 놀라서 당장 링크를 눌러 확인해 본다.", score: 0 }, { text: "문자 링크는 무시하고, '교통민원24' 공식 앱이나 사이트로 직접 들어간다.", score: 1 }] },
+            { id: 4, tag: "물품거래 사기", text: "중고마켓 판매자가 '안전결제 수수료는 제가 낼 테니 이 링크로 결제하세요'라며 카톡으로 링크를 보낸다면?", options: [{ text: "판매자가 메신저로 직접 보낸 결제 링크는 100% 가짜(피싱)라 생각하고 거래를 중단한다.", score: 1 }, { text: "수수료도 내주고 안전결제라니 안심하고 링크를 눌러 결제한다.", score: 0 }] },
+            { id: 5, tag: "투자 리딩방", text: "'미국 S&P 500, 나스닥 핵심 대형주 300% 수익 보장' 1:1 리딩방 초대 문자가 온다면?", options: [{ text: "손해 볼 건 없으니 일단 무료 정보방 링크를 눌러 입장해 본다.", score: 0 }, { text: "원금과 고수익을 무조건 보장하는 투자는 100% 사기라 생각하고 차단한다.", score: 1 }] },
+            { id: 6, tag: "택배 스미싱", text: "[국외발신] 택배 주소지 불일치로 배송이 지연되고 있습니다. 링크(URL)를 확인하세요.", options: [{ text: "택배사 공식 앱이나 배송 조회 페이지에서 송장번호로 직접 확인한다.", score: 1 }, { text: "배송이 늦어지면 안 되니 얼른 문자의 링크를 눌러 확인해 본다.", score: 0 }] },
+            { id: 7, tag: "가족 사칭", text: "자녀에게 '엄마 나 액정 깨져서 임시 폰이야. 카톡으로 상품권 좀 사줘' 문자가 온다면?", options: [{ text: "폰이 깨져서 당황했겠다 싶어서 바로 상품권을 사서 보낸다.", score: 0 }, { text: "전화로 먼저 확인하거나 '우리 집 비상 암호'를 물어본다.", score: 1 }] }
         ];
 
         function App() {
             const [step, setStep] = useState(0); 
             const [score, setScore] = useState(0);
+            
+            // 킥 1: 함정 알림 로직
+            const [showTrapAnim, setShowTrapAnim] = useState(false);
+            const [isTrapped, setIsTrapped] = useState(false);
+            const [trapAlreadyShown, setTrapAlreadyShown] = useState(false);
+
+            useEffect(() => {
+                // 4번 문제 진입 시 1.5초 뒤에 함정 알림 띄우기
+                if (step === 4 && !trapAlreadyShown) {
+                    const timer = setTimeout(() => { setShowTrapAnim(true); }, 1500);
+                    return () => clearTimeout(timer);
+                }
+            }, [step]);
 
             const handleStart = () => {
-                setStep(1);
-                setScore(0);
+                setStep(1); setScore(0); setIsTrapped(false); setTrapAlreadyShown(false); setShowTrapAnim(false);
             };
 
             const handleAnswer = (optionScore) => {
                 setScore(score + optionScore);
                 setStep(step + 1);
+                setShowTrapAnim(false); // 넘어가면 알림 사라짐
             };
 
-            const getResult = () => {
-                // 100점 만점으로 자동 환산
+            const handleTrapClick = () => {
+                setIsTrapped(true);
+                setShowTrapAnim(false);
+                setTrapAlreadyShown(true);
+            };
+
+            const closeTrap = () => {
+                setIsTrapped(false);
+            };
+
+            // 킥 2: 타로 카드 결과 로직
+            const getTarotResult = () => {
                 const finalScore = Math.round((score / questions.length) * 100);
-                
-                if (finalScore === 100) return { score: finalScore, title: "[안전] 피싱 철벽 방어자 🛡️", desc: "완벽합니다! 보이스피싱범이 울고 갈 방어력입니다. 하지만 내 가족도 나만큼 안전할까요?", color: "text-green-600", bg: "bg-green-100" };
-                if (finalScore >= 70) return { score: finalScore, title: "[주의] 아차 하는 순간, 방심 금물 🤔", desc: "기본적인 예방 수칙은 알고 계시지만, 교묘한 최신 수법에는 아차 하는 순간 당할 수 있어요. 조금 더 신중해질 필요가 있습니다.", color: "text-yellow-600", bg: "bg-yellow-100" };
-                return { score: finalScore, title: "[위험] 귀가 얇은 팔랑귀 🚨", desc: "속임수에 넘어가기 매우 쉬운 위험 상태입니다! 지금 당장 가족과 함께 방어막을 구축해야 합니다.", color: "text-red-600", bg: "bg-red-100" };
+                if (finalScore === 100) return { 
+                    score: finalScore, card: "황제 (The Emperor)", 
+                    img: "👑", desc: "당신은 보이스피싱범도 울고 갈 철벽의 수문장! 어떤 교묘한 수법에도 통제력을 잃지 않는 단단한 방어력을 갖췄습니다.", color: "text-blue-700", bg: "bg-blue-100" 
+                };
+                if (finalScore >= 70) return { 
+                    score: finalScore, card: "무너지는 탑 (The Tower)", 
+                    img: "⚡", desc: "기본기는 있지만, 아차 하는 순간 벼락을 맞듯 공들여 쌓은 탑(자산)이 한순간에 붕괴될 수 있는 아슬아슬한 상태입니다.", color: "text-yellow-700", bg: "bg-yellow-100" 
+                };
+                return { 
+                    score: finalScore, card: "바보 (The Fool)", 
+                    img: "🃏", desc: "낭떠러지인 줄도 모르고 걷는 상태! 남의 말을 너무 쉽게 믿어 지갑이 털리기 직전입니다. 지금 당장 방어막이 필요합니다.", color: "text-red-700", bg: "bg-red-100" 
+                };
             };
 
             const handleShare = async () => {
-                const shareData = {
-                    title: '내 피싱 방어력 모의고사',
-                    text: '최신 보이스피싱 수법! 내 방어력은 몇 점일까? 1분 만에 테스트하고 우리 가족 비상 암호도 정해보세요!',
-                    url: window.location.href
-                };
-
-                if (navigator.share) {
-                    try {
-                        await navigator.share(shareData);
-                    } catch (err) {
-                        console.log('공유 취소됨');
-                    }
-                } else {
-                    try {
-                        await navigator.clipboard.writeText(window.location.href);
-                        alert('테스트 링크가 복사되었습니다! 카카오톡이나 맘카페 등에 붙여넣기(Ctrl+V) 해주세요.');
-                    } catch (err) {
-                        alert('링크 복사에 실패했습니다. 인터넷 주소창의 링크를 직접 복사해 주세요.');
-                    }
-                }
+                const shareData = { title: '내 피싱 방어력 모의고사', text: '최신 보이스피싱 수법! 내 방어력은 몇 점일까? 1분 만에 테스트하고 우리 가족 비상 암호도 정해보세요!', url: window.location.href };
+                if (navigator.share) { try { await navigator.share(shareData); } catch (err) { console.log('공유 취소됨'); } } 
+                else { try { await navigator.clipboard.writeText(window.location.href); alert('테스트 링크가 복사되었습니다!'); } catch (err) { alert('링크 복사에 실패했습니다.'); } }
             };
 
             return (
-                <div className="min-h-screen flex items-center justify-center p-4">
-                    <div className="bg-white rounded-2xl shadow-xl max-w-md w-full overflow-hidden">
+                <div className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden bg-gray-50">
+                    
+                    {/* 함정 클릭 시 나오는 시뻘건 경고 화면 */}
+                    {isTrapped && (
+                        <div className="absolute inset-0 bg-red-600 z-50 flex flex-col items-center justify-center p-6 text-center animate-pulse">
+                            <h1 className="text-6xl mb-4">🚨</h1>
+                            <h2 className="text-2xl font-black text-white mb-4 leading-relaxed">삐빅!<br/>당신은 방금 가짜 알림에 낚였습니다.</h2>
+                            <p className="text-red-100 mb-8 break-keep">테스트 도중에도 무심코 누른 이 버튼 하나가, 실제 상황이었다면 당신의 모든 계좌를 털어갔을 것입니다. 피싱은 방심하는 순간을 노립니다.</p>
+                            <button onClick={closeTrap} className="bg-white text-red-600 font-bold py-3 px-6 rounded-xl shadow-lg">놀란 가슴 쓸어내리고 테스트로 돌아가기</button>
+                        </div>
+                    )}
+
+                    <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full overflow-hidden relative">
                         
-                        {step === 0 && (
-                            <div className="p-8 text-center space-y-6">
-                                <div className="text-5xl mb-4">📱</div>
-                                <h1 className="text-2xl font-bold text-gray-800">내 피싱 방어력은<br/>과연 몇 점일까?</h1>
-                                <p className="text-gray-500">1분 만에 알아보는 나의 취약점 진단<br/>(최신 수법 반영, 총 7문항)</p>
-                                <button onClick={handleStart} className="w-full bg-blue-600 text-white font-bold py-4 rounded-xl hover:bg-blue-700 transition duration-200">
-                                    테스트 시작하기
-                                </button>
+                        {/* 킥 1: 화면 상단에 스윽 내려오는 가짜 증권앱 팝업 */}
+                        {showTrapAnim && (
+                            <div onClick={handleTrapClick} className="absolute top-4 left-4 right-4 bg-white/95 backdrop-blur shadow-[0_10px_40px_rgba(0,0,0,0.2)] rounded-2xl p-4 cursor-pointer anim-slide-down z-40 border border-gray-100 flex items-center gap-3">
+                                <div className="bg-red-500 rounded-lg p-2 text-white text-xs">🔔</div>
+                                <div className="flex-1">
+                                    <p className="text-[10px] font-bold text-gray-400 mb-1">증권앱 긴급알림</p>
+                                    <p className="text-xs font-bold text-gray-800 leading-snug break-keep">[긴급] 보유 중인 S&P 500, 엔비디아(NVDA) 등 전량 시장가 매도 체결. 즉시 확인 요망 (터치)</p>
+                                </div>
                             </div>
                         )}
 
+                        {/* 시작 화면 */}
+                        {step === 0 && (
+                            <div className="p-8 text-center space-y-6">
+                                <div className="text-5xl mb-4">🕵️‍♂️</div>
+                                <h1 className="text-2xl font-bold text-gray-800">내 피싱 방어력은<br/>과연 몇 점일까?</h1>
+                                <p className="text-gray-500 break-keep">1분 만에 알아보는 나의 취약점 진단.<br/>(당신의 방심을 노리는 함정이 숨어있습니다)</p>
+                                <button onClick={handleStart} className="w-full bg-blue-600 text-white font-bold py-4 rounded-xl hover:bg-blue-700 transition duration-200">테스트 시작하기</button>
+                            </div>
+                        )}
+
+                        {/* 문제 화면 */}
                         {step > 0 && step <= questions.length && (
                             <div className="p-8">
                                 <div className="flex justify-between items-center mb-6">
@@ -162,13 +151,9 @@
                                 <h2 className="text-xl font-bold text-gray-800 mb-8 leading-relaxed break-keep">
                                     {questions[step-1].text}
                                 </h2>
-                                <div className="space-y-4">
+                                <div className="space-y-4 relative z-10">
                                     {questions[step-1].options.map((option, index) => (
-                                        <button 
-                                            key={index}
-                                            onClick={() => handleAnswer(option.score)}
-                                            className="w-full text-left p-4 rounded-xl border-2 border-gray-100 hover:border-blue-500 hover:bg-blue-50 transition duration-200 text-gray-700 break-keep"
-                                        >
+                                        <button key={index} onClick={() => handleAnswer(option.score)} className="w-full text-left p-4 rounded-xl border-2 border-gray-100 hover:border-blue-500 hover:bg-blue-50 transition duration-200 text-gray-700 break-keep">
                                             {option.text}
                                         </button>
                                     ))}
@@ -176,49 +161,77 @@
                             </div>
                         )}
 
+                        {/* 결과 화면 */}
                         {step > questions.length && (
-                            <div className="p-8">
-                                <div className={`text-center p-6 rounded-xl ${getResult().bg} mb-8`}>
-                                    <h1 className={`text-5xl font-black ${getResult().color} mb-2`}>{getResult().score}점</h1>
-                                    <h2 className={`text-xl font-bold ${getResult().color} mb-3`}>{getResult().title}</h2>
-                                    <p className="text-gray-700 text-sm leading-relaxed break-keep">{getResult().desc}</p>
-                                </div>
-
-                                <div className="bg-blue-50 p-5 rounded-xl border-2 border-dashed border-blue-400 mb-6 relative">
-                                    <div className="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-blue-600 text-white px-3 py-1 rounded-full text-xs font-bold shadow">
-                                        📸 작성 후 화면을 캡처해 가족에게 보내세요!
-                                    </div>
-                                    <h3 className="text-lg font-bold text-center text-blue-900 mt-3 mb-3">
-                                        📝 우리 가족 비상 암호 서약서
-                                    </h3>
-                                    <p className="text-xs text-center text-gray-600 mb-4 break-keep">
-                                        우리 가족은 전화나 카톡으로 금전, 앱 설치를 요구받으면 <strong>반드시 아래의 암호</strong>를 물어보고 확인하겠습니다.
-                                    </p>
+                            <div className="bg-gray-100 pb-8">
+                                
+                                {/* 킥 2: 타로 카드 컨셉의 결과 */}
+                                <div className="p-8 text-center bg-gray-900 text-white rounded-b-3xl shadow-xl">
+                                    <p className="text-gray-400 text-sm mb-2">당신의 현재 피싱 방어력</p>
+                                    <h1 className="text-6xl font-black mb-6 text-yellow-400">{getResult().score}점</h1>
                                     
-                                    <div className="bg-white p-4 rounded-lg border border-gray-200">
-                                        <p className="text-sm font-bold text-gray-700 mb-1">Q. 우리 가족의 비상 질문은?</p>
-                                        <input 
-                                            type="text" 
-                                            placeholder="(터치해서 작성. 예: 첫 가족 여행지는?)" 
-                                            className="w-full border-b-2 border-gray-200 py-2 mb-4 text-gray-800 text-sm focus:outline-none focus:border-blue-500 transition-colors bg-transparent placeholder-gray-400"
-                                        />
-                                        <p className="text-sm font-bold text-gray-700 mb-1">A. 정답은?</p>
-                                        <input 
-                                            type="text" 
-                                            placeholder="(터치해서 정답 작성)" 
-                                            className="w-full border-b-2 border-gray-200 py-2 text-gray-800 text-sm focus:outline-none focus:border-blue-500 transition-colors bg-transparent placeholder-gray-400"
-                                        />
+                                    <div className="bg-gray-800 border border-gray-700 rounded-2xl p-6 mx-auto max-w-[240px] shadow-2xl transform hover:scale-105 transition-transform">
+                                        <div className="text-7xl mb-4">{getResult().img}</div>
+                                        <p className="text-sm text-gray-400 mb-1">나의 카드</p>
+                                        <h2 className="text-xl font-bold text-white mb-2">{getResult().card}</h2>
+                                    </div>
+                                    <p className="mt-6 text-gray-300 text-sm leading-relaxed break-keep">{getResult().desc}</p>
+                                </div>
+
+                                {/* 킥 3: 현실 자각 영수증 (방어력이 낮거나 중간일 때 뼈아프게) */}
+                                <div className="px-6 mt-8">
+                                    <div className="bg-white shadow-md">
+                                        <div className="p-5 border-b border-dashed border-gray-300 flex flex-col items-center">
+                                            <h3 className="font-bold text-gray-800 tracking-widest text-lg mb-1">예상 피해 영수증</h3>
+                                            <p className="text-xs text-gray-400">보이스피싱 피해 발생 시 예상 내역</p>
+                                        </div>
+                                        <div className="p-5 font-mono text-xs text-gray-600 space-y-3">
+                                            <div className="flex justify-between"><span>미국 나스닥 100 ETF</span> <span className="text-red-500">- 강제 매도</span></div>
+                                            <div className="flex justify-between"><span>애플(AAPL) 주식 잔고</span> <span className="text-red-500">- 전량 증발</span></div>
+                                            <div className="flex justify-between"><span>마이너스 통장 최대 한도</span> <span className="text-red-500">- 대출 실행</span></div>
+                                            <div className="border-t border-gray-200 my-2 pt-2 flex justify-between font-bold text-sm text-gray-800">
+                                                <span>총 피해 자산액</span> <span>당신의 피와 땀 전체</span>
+                                            </div>
+                                        </div>
+                                        <div className="receipt-edge"></div>
                                     </div>
                                 </div>
 
-                                <div className="space-y-3">
-                                    <button onClick={handleShare} className="w-full bg-yellow-400 text-gray-800 font-bold py-3 rounded-xl hover:bg-yellow-500 transition duration-200 flex justify-center items-center">
-                                        링크로 테스트 공유하기
+                                {/* 킥 4: 몰입감을 높이는 서사적 서약서 */}
+                                <div className="px-6 mt-8">
+                                    <div className="bg-white p-6 rounded-2xl border-2 border-blue-600 relative shadow-lg">
+                                        <div className="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-blue-600 text-white px-4 py-1 rounded-full text-xs font-bold shadow-md whitespace-nowrap">
+                                            📸 캡처해서 가족 단톡방에 올리세요
+                                        </div>
+                                        <h3 className="text-lg font-bold text-center text-blue-900 mt-2 mb-4">
+                                            📝 기억을 되찾는 비상 암호
+                                        </h3>
+                                        <p className="text-[13px] text-gray-600 mb-5 break-keep leading-relaxed bg-blue-50 p-3 rounded-lg">
+                                            마치 환생 이전의 이름을 까맣게 잊고 있다가, 모든 것을 잃을 뻔한 마지막 순간에 결국 본인의 진짜 이름이 기억나는 것처럼... 가족의 진짜 목소리인지 확인할 수 있는 <strong>단 하나의 '암호'</strong>를 지금 기억하고 새겨두세요.
+                                        </p>
+                                        
+                                        <div className="space-y-4">
+                                            <div>
+                                                <p className="text-sm font-bold text-gray-700 mb-1">Q. 우리 가족의 비상 질문은?</p>
+                                                <input type="text" placeholder="(예: 첫 가족 여행지는?)" className="w-full border-b-2 border-gray-300 py-2 text-gray-800 text-sm focus:outline-none focus:border-blue-600 bg-transparent placeholder-gray-400 font-bold" />
+                                            </div>
+                                            <div>
+                                                <p className="text-sm font-bold text-gray-700 mb-1">A. 오직 우리만 아는 정답은?</p>
+                                                <input type="text" placeholder="(정답 작성)" className="w-full border-b-2 border-gray-300 py-2 text-gray-800 text-sm focus:outline-none focus:border-blue-600 bg-transparent placeholder-gray-400 font-bold" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="px-6 mt-6 space-y-3">
+                                    <button onClick={handleShare} className="w-full bg-blue-600 text-white font-bold py-4 rounded-xl hover:bg-blue-700 transition duration-200 shadow-md">
+                                        이 소름 돋는 테스트 공유하기
                                     </button>
-                                    <button onClick={handleStart} className="w-full bg-gray-200 text-gray-700 font-bold py-3 rounded-xl hover:bg-gray-300 transition duration-200">
-                                        다시 하기
+                                    <button onClick={handleStart} className="w-full bg-white text-gray-700 font-bold py-3 rounded-xl hover:bg-gray-50 transition duration-200 border border-gray-300">
+                                        처음부터 다시 하기
                                     </button>
                                 </div>
+                                
                             </div>
                         )}
                     </div>
